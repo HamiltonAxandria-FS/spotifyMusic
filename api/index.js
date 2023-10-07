@@ -7,11 +7,11 @@ const app = express();
 const PORT = process.env.PORT;
 const DATABASE_URL = process.env.DATABASE_URL;
 
-// Middleware
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
+
 mongoose.connect(DATABASE_URL);
 const db = mongoose.connection;
 db.on("error", (error) => {

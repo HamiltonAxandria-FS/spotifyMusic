@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-require("dotenv").config();
 
+
+require("dotenv").config();
 
 const clientSecret = process.env.clientSecret
 const redirectUri = process.env.redirectUri
@@ -17,7 +18,6 @@ function generateRandomString(length) {
     return result;
   }
 
-// Middleware to handle Spotify authentication
 router.get("/login", (req, res) => {
     const state = generateRandomString(16);
     const scope = 'user-read-private user-read-email';
@@ -34,7 +34,7 @@ router.get("/login", (req, res) => {
   res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 });
 
-// Callback route to exchange the code for an access token
+
 router.get("/callback", async (req, res) => {
   const code = req.query.code;
 
@@ -53,20 +53,13 @@ router.get("/callback", async (req, res) => {
 
     const accessToken = response.data.access_token;
 
-    // Store or use the access token as needed
-    // You can also save the refresh token for later use
 
-    res.redirect("http://localhost:3000/");
+    res.redirect(redirectUri);
   } catch (error) {
     console.error("Error exchanging code for access token:", error);
     res.status(500).send("Internal Server Error");
   }
 });
 
-// Route to check the status of the user's authentication
-router.get("/status", (req, res) => {
-  // Implement your logic to check the user's authentication status here
-  res.send("Authentication status route");
-});
 
 module.exports = router;

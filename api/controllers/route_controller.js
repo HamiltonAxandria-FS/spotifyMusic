@@ -7,7 +7,6 @@ const clientID = process.env.clientID
 const clientSecret = process.env.clientSecret
 const redirectUri = process.env.redirectUri
 
-// Function to exchange authorization code for an access token
 const createToken = async (authorizationCode) => {
   const authOptions = {
     method: "post",
@@ -32,7 +31,6 @@ const createToken = async (authorizationCode) => {
   }
 };
 
-// Function to add a token to the database
 const addToken = async (tokenData) => {
   try {
     const token = new Token({
