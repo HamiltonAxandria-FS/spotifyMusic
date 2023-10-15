@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const { checkToken, search } = require("../controllers/route_controller");
 
 
 require("dotenv").config();
 
 const clientSecret = process.env.clientSecret
+const clientID = process.env.clientID
 const redirectUri = process.env.redirectUri
 const tokenUrl = "https://accounts.spotify.com/api/token";
 
@@ -51,15 +53,20 @@ router.get("/callback", async (req, res) => {
       client_secret: clientSecret,
     });
 
-    const accessToken = response.data.access_token;
-
-
     res.redirect(redirectUri);
   } catch (error) {
     console.error("Error exchanging code for access token:", error);
     res.status(500).send("Internal Server Error");
   }
 });
+
+router.get('/status', (req, res) => {
+    checkToken(req, res);
+})
+
+router.get('/search', (req, res) => {
+    search(req, res);
+})
 
 
 module.exports = router;

@@ -38,7 +38,6 @@ const addToken = async (tokenData) => {
       refreshToken: tokenData.refresh_token,
     });
     await token.save();
-    console.log("New token created");
   } catch (error) {
     throw new Error("Error adding token to the database: " + error.message);
   }
@@ -77,4 +76,24 @@ const checkToken = async (req, res) => {
   }
 };
 
-module.exports = { createToken, addToken, checkToken };
+const search = async (req, res) => {
+    try {
+      const response = await axios.get('https://api.spotify.com/v1/search', {
+        params: {
+          type: 'album,artist,track',
+          q: req.query.q,
+        },
+        headers: {
+          'Authorization': `Bearer ${req.token.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      res.json(response.data);
+    } catch (error) {
+      res.json(error);
+    }
+  }
+  
+
+module.exports = { createToken, addToken, checkToken, search };
