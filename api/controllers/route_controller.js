@@ -95,5 +95,51 @@ const search = async (req, res) => {
     }
   }
   
+  async function searchSpotify(title, artist, genre) {
+    const accessToken = await getAccessToken();
 
-module.exports = { createToken, addToken, checkToken, search };
+    async function getAccessToken() {
+      const authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        method: 'post',
+        params: {
+          grant_type: 'client_credentials'
+        },
+        headers: {
+          'Authorization': 'Basic ' + Buffer.from(clientID + ':' + clientSecret).toString('base64')
+        }
+      };
+
+      const response = await axios(authOptions);
+       return response.data.access_token;
+    }
+  
+    const searchOptions = {
+      url: 'https://api.spotify.com/v1/search',
+      method: 'get',
+      headers: {
+        'Authorization': 'Bearer ' + accessToken
+      },
+      params: {
+        q: `track:${title} artist:${artist} genre:${genre}`,
+        type: 'track'
+      }
+    };
+  
+    try {
+      const response = await axios(searchOptions);
+      const tracks = response.data.tracks.items;
+  
+      if (tracks.length > 0) {
+        tracks.forEach(track => {
+          console.log(`Track: ${track.name}, Artist: ${track.artists[0].name}, Genre: ${genre}`);
+        });
+      } else {
+        console.log('No tracks found.');
+      }
+    } catch (error) {
+      console.error('Error searching for tracks:', error.message);
+    }
+  }
+
+module.exports = { createToken, addToken, checkToken, search, searchSpotify };

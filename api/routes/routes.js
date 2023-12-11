@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-const { checkToken, search } = require("../controllers/route_controller");
+const { checkToken, searchSpotify } = require("../controllers/route_controller");
 require("dotenv").config();
 
 const clientSecret = process.env.clientSecret
@@ -56,7 +56,7 @@ router.get("/callback", async (req, res) => {
       params: {
         grant_type: 'authorization_code',
         code,
-        redirect_uri: REDIRECT_URI,
+        redirect_uri: 'http://localhost:3000/auth/callback',
       },
       headers: {
         Authorization: `Basic ${Buffer.from(
@@ -79,10 +79,21 @@ router.get('/status', (req, res) => {
 })
 
 
-// extra steps
-router.get('/search', (req, res) => {
-    search(req, res);
-})
+//search
+router.get('/search', async (req, res) => {
+  const { title, artist, genre } = req.query;
+
+  if (!title || !artist || !genre) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  try {
+    const result = await searchSpotify(title, artist, genre);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 
 module.exports = router;
