@@ -17,7 +17,7 @@ const Search = () => {
                 onChange={search}
                 value={query}
             />
-            <button className="bg-white p-4">🔍</button>
+            <button>🔍</button>
         </div>
     );
 };

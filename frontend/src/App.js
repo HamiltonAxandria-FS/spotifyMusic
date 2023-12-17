@@ -1,18 +1,18 @@
 import './App.css';
-import Search from './components/search';
+import Header from './components/header';
+import Footer from './components/footer';
+import Body from './components/body';
 
 function App() {
   return (
     <div >
-      <header >
-          <Search />
-      </header>
-      <body>
-        <h5> Please Sign in</h5>
-      </body>
+     <Header />
+     <Body />
+      <Footer />
     </div>
   );
 }
+
 
   
 
